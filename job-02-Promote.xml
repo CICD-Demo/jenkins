@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>
+DOCKER_EP=$(python -c 'import socket; print socket.gethostbyname("docker-registry.default")'):5000
+INTEGRATION=integration
+PROD=prod
+
+for repo in apiserver camel frontend webserver; do
+  sudo docker pull $DOCKER_EP/$INTEGRATION/$repo:latest
+  sudo docker tag -f $DOCKER_EP/$INTEGRATION/$repo:latest $DOCKER_EP/$PROD/$repo:latest
+  sudo docker push $DOCKER_EP/$PROD/$repo:latest
+done
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
