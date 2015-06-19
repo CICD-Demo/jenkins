@@ -14,15 +14,18 @@ items:
   metadata:
     name: jenkins
     labels:
-      component: jenkins
+      service: jenkins
+      function: infra
   spec:
     replicas: 1
     selector:
-      component: jenkins
+      service: jenkins
+      function: infra
     template:
       metadata:
         labels:
-          component: jenkins
+          service: jenkins
+          function: infra
       spec:
         containers:
         - name: jenkins
@@ -46,19 +49,22 @@ items:
   metadata:
     name: jenkins
     labels:
-      component: jenkins
+      service: jenkins
+      function: infra
   spec:
     ports:
     - port: 8080
     selector:
-      component: jenkins
+      service: jenkins
+      function: infra
 
 - kind: Route
   apiVersion: v1beta1
   metadata:
     name: jenkins
     labels:
-      component: jenkins
+      service: jenkins
+      function: infra
   host: jenkins.$DOMAIN
   serviceName: jenkins
 EOF
