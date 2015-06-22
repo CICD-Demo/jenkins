@@ -70,7 +70,7 @@ items:
 EOF
 
 while true; do
-  PODIP=$(osc get pods -l component=jenkins --template='{{(index .items 0).status.podIP}}' 2>/dev/null)
+  PODIP=$(osc get pods -l service=jenkins --template='{{(index .items 0).status.podIP}}' 2>/dev/null)
   if [ "$PODIP" != '<no value>' -a "${PODIP:0:5}" != 'Error' ]; then
     break
   fi

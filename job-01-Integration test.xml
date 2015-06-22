@@ -18,8 +18,8 @@
   <builders>
     <hudson.tasks.Shell>
       <command>set -e
-curl -s http://frontend.integration/ | grep -q 'Ticket Monster'
-curl -s http://frontend.integration/rest/events | grep -q 'Rock concert'
+curl -s http://reverseproxy.integration/ | grep -q 'Ticket Monster'
+curl -s http://reverseproxy.integration/rest/events | grep -q 'Rock concert'
 </command>
     </hudson.tasks.Shell>
   </builders>
