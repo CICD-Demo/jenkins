@@ -18,7 +18,7 @@ DOCKER_EP=$(python -c 'import socket; print socket.gethostbyname("docker-registr
 INTEGRATION=integration
 PROD=prod
 
-for repo in restapis emailroute reverseproxy webserver; do
+for repo in restapis emailroute webserver; do
   sudo docker pull $DOCKER_EP/$INTEGRATION/$repo:latest
   sudo docker tag -f $DOCKER_EP/$INTEGRATION/$repo:latest $DOCKER_EP/$PROD/$repo:latest
   sudo docker push $DOCKER_EP/$PROD/$repo:latest

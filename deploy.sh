@@ -5,12 +5,12 @@ cd $(dirname $0)
 . utils
 . ../../environment
 
-osc create -f - <<EOF
+oc create -f - <<EOF
 kind: List
-apiVersion: v1beta3
+apiVersion: v1
 items:
 - kind: ReplicationController
-  apiVersion: v1beta3
+  apiVersion: v1
   metadata:
     name: jenkins
     labels:
@@ -39,13 +39,14 @@ items:
           volumeMounts:
           - mountPath: /var/run/docker.sock
             name: docker-socket
+        serviceAccount: root
         volumes:
         - hostPath:
             path: /var/run/docker.sock
           name: docker-socket
 
 - kind: Service
-  apiVersion: v1beta3
+  apiVersion: v1
   metadata:
     name: jenkins
     labels:
@@ -59,18 +60,20 @@ items:
       function: infra
 
 - kind: Route
-  apiVersion: v1beta1
+  apiVersion: v1
   metadata:
     name: jenkins
     labels:
       service: jenkins
       function: infra
-  host: jenkins.$DOMAIN
-  serviceName: jenkins
+  spec:
+    host: jenkins.$DOMAIN
+    to:
+      name: jenkins
 EOF
 
 while true; do
-  PODIP=$(osc get pods -l service=jenkins --template='{{(index .items 0).status.podIP}}' 2>/dev/null)
+  PODIP=$(oc get pods -l service=jenkins --template='{{(index .items 0).status.podIP}}' 2>/dev/null)
   if [ "$PODIP" != '<no value>' -a "${PODIP:0:5}" != 'Error' ]; then
     break
   fi
