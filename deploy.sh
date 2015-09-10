@@ -5,6 +5,8 @@ cd $(dirname $0)
 . utils
 . ../../environment
 
+SECRET=$(oc get sa root -n infra -o template --template='{{ (index .imagePullSecrets 0).name }}')
+
 oc create -f - <<EOF
 kind: List
 apiVersion: v1
@@ -37,13 +39,18 @@ items:
           securityContext:
             privileged: true
           volumeMounts:
-          - mountPath: /var/run/docker.sock
-            name: docker-socket
+          - name: docker-cfg
+            mountPath: /tmp/dockercfg
+          - name: docker-socket
+            mountPath: /var/run/docker.sock
         serviceAccount: root
         volumes:
-        - hostPath:
+        - name: docker-cfg
+          secret:
+            secretName: "$SECRET"
+        - name: docker-socket
+          hostPath:
             path: /var/run/docker.sock
-          name: docker-socket
 
 - kind: Service
   apiVersion: v1
